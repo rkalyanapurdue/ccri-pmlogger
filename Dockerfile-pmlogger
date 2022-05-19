@@ -1,0 +1,15 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && apt-get -y install vim wget curl gnupg2
+
+RUN wget -qO - https://pcp.io/GPG-KEY-PCP | apt-key add - && echo 'deb https://performancecopilot.jfrog.io/artifactory/pcp-deb-release focal main' | tee -a /etc/apt/sources.list
+
+RUN apt-get update && apt-get -y install pcp-zeroconf
+
+RUN curl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+
+RUN echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb focal main" | tee /etc/apt/sources.list.d/redis.list
+
+RUN apt-get update && apt-get -y install redis
+
+ENTRYPOINT ["redis-server"]
